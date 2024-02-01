@@ -1,14 +1,16 @@
 import requests
 from urllib.parse import urlencode
 from pprint import pprint
+from tqdm import tqdm
+from time import sleep
 
 from .config import API_KEY
 from .const import URL_BASE, COUNTRIES
 
 
-def get_articles(country: str) -> dict:
+def get_articles(country: str) -> list:
     """
-        get articles from newsapi.org
+        get articles from newsapi.org for a given country.
     """
     if not country in COUNTRIES:
         raise ValueError(f"country '{country}' not a valid country code")
@@ -20,13 +22,18 @@ def get_articles(country: str) -> dict:
     articles = response.get('articles')
     return articles
 
-def insert_news():
+def get_all_articles() -> dict:
     """
-        insert news in postgres
+        get articles for all countries.
     """
-    pass
-
-
-if __name__ == '__main__':
-    articles = get_articles('fr')
-    pprint(articles)
+    all_articles = {}
+    for country_code in tqdm(COUNTRIES):
+        try:
+            articles = get_articles(country_code)
+        except Exception as err:
+            articles = []
+            print(f'{country_code} failed:'+str(err))
+            
+        all_articles[country_code] = articles
+        sleep(1)
+    return all_articles
