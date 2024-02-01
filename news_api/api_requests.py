@@ -2,24 +2,23 @@ import requests
 from urllib.parse import urlencode
 from pprint import pprint
 
-from config import API_KEY
-
-URL_BASE = 'https://newsapi.org/v2/top-headlines?'
-PARAMS_BASE = {'apiKey':API_KEY}
+from .config import API_KEY
+from .const import URL_BASE, COUNTRIES
 
 
 def get_articles(country: str) -> dict:
     """
         get articles from newsapi.org
-    """ 
-    params = PARAMS_BASE.copy()
-    params['country'] = country
+    """
+    if not country in COUNTRIES:
+        raise ValueError(f"country '{country}' not a valid country code")
+
+    params = {'apiKey':API_KEY, 'country':country}
     url = URL_BASE + urlencode(params)
 
     response = requests.get(url).json()
     articles = response.get('articles')
     return articles
-
 
 def insert_news():
     """
