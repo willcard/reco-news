@@ -5,10 +5,13 @@ name = "pypi"
 
 [packages]
 apache-airflow = "*"
+psycopg = "*"
 
 [dev-packages]
 jupyter = "*"
 pytest = "*"
+pandas = "*"
+tqdm = "*"
 
 [requires]
 python_version = "3.11"
